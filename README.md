@@ -54,6 +54,8 @@ Repositorio para el consumo del paquete de pip de la kataCheckout en una web api
   - `add_rule` (objeto, opcional): Regla a añadir
     - `rule_id` (entero): ID de la regla a añadir
   - `total` (booleano, opcional): Calcular total si se establece a verdadero
+
+Ejemplo de json body:
 ```
 {
     "action_type": "manage_checkout",
