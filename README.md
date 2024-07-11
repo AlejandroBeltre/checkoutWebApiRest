@@ -12,135 +12,148 @@ Repositorio para el consumo del paquete de pip de la kataCheckout en una web api
 
 ### Checkouts
 
-#### List Checkouts
+#### Listar Checkouts
 - **URL:** `/checkouts/`
-- **Method:** GET
-- **Description:** Retrieve a list of all checkouts.
+- **Método:** GET
+- **Descripción:** Obtener una lista de todos los checkouts.
 
-#### Create Checkout
+#### Crear Checkout
 - **URL:** `/checkouts/`
-- **Method:** POST
-- **Description:** Create a new checkout.
+- **Método:** POST
+- **Descripción:** Crear un nuevo checkout.
 
-#### Retrieve Checkout
+#### Obtener Checkout
 - **URL:** `/checkouts/{id}/`
-- **Method:** GET
-- **Description:** Retrieve details of a specific checkout.
+- **Método:** GET
+- **Descripción:** Obtener detalles de un checkout específico.
 
-#### Update Checkout
+#### Actualizar Checkout
 - **URL:** `/checkouts/{id}/`
-- **Method:** PUT
-- **Description:** Update a specific checkout.
+- **Método:** PUT
+- **Descripción:** Actualizar un checkout específico.
 
-#### Partial Update Checkout
+#### Actualizar Parcialmente Checkout
 - **URL:** `/checkouts/{id}/`
-- **Method:** PATCH
-- **Description:** Partially update a specific checkout.
+- **Método:** PATCH
+- **Descripción:** Actualizar parcialmente un checkout específico.
 
-#### Delete Checkout
+#### Eliminar Checkout
 - **URL:** `/checkouts/{id}/`
-- **Method:** DELETE
-- **Description:** Delete a specific checkout.
+- **Método:** DELETE
+- **Descripción:** Eliminar un checkout específico.
 
-#### Manage Checkout
+#### Gestionar Checkout
 - **URL:** `/checkouts/{id}/manage_checkout/`
-- **Method:** POST
-- **Description:** Manage a checkout, including scanning products, adding rules, and calculating totals.
-- **Parameters:**
-  - `action_type` (string): Type of action to perform (e.g., "manage_checkout")
-  - `scan_product` (object, optional): Product to scan
-    - `product_name` (string): Name of the product
-    - `quantity` (integer, optional): Quantity of the product (default: 1)
-  - `add_rule` (object, optional): Rule to add
-    - `rule_id` (integer): ID of the rule to add
-  - `total` (boolean, optional): Calculate total if set to true
+- **Método:** POST
+- **Descripción:** Gestionar un checkout, incluyendo escaneo de productos, adición de reglas y cálculo de totales.
+- **Parámetros:**
+  - `action_type` (string): Tipo de acción a realizar (ej. "manage_checkout")
+  - `scan_product` (objeto, opcional): Producto a escanear
+    - `product_name` (string): Nombre del producto
+    - `quantity` (entero, opcional): Cantidad del producto (por defecto: 1)
+  - `add_rule` (objeto, opcional): Regla a añadir
+    - `rule_id` (entero): ID de la regla a añadir
+  - `total` (booleano, opcional): Calcular total si se establece a verdadero
+```
+{
+    "action_type": "manage_checkout",
+    "scan_product": {
+        "product_name": "example_product",
+        "quantity": 2
+    },
+    "add_rule": {
+        "rule_id": 1
+    },
+    "total": true
+}
+```
 
-### Products
 
-#### List Products
+### Productos
+
+#### Listar Productos
 - **URL:** `/products/`
-- **Method:** GET
-- **Description:** Retrieve a list of all products.
+- **Método:** GET
+- **Descripción:** Obtener una lista de todos los productos.
 
-#### Create Product
+#### Crear Producto
 - **URL:** `/products/`
-- **Method:** POST
-- **Description:** Create a new product.
+- **Método:** POST
+- **Descripción:** Crear un nuevo producto.
 
-#### Retrieve Product
+#### Obtener Producto
 - **URL:** `/products/{id}/`
-- **Method:** GET
-- **Description:** Retrieve details of a specific product.
+- **Método:** GET
+- **Descripción:** Obtener detalles de un producto específico.
 
-#### Update Product
+#### Actualizar Producto
 - **URL:** `/products/{id}/`
-- **Method:** PUT
-- **Description:** Update a specific product.
+- **Método:** PUT
+- **Descripción:** Actualizar un producto específico.
 
-#### Partial Update Product
+#### Actualizar Parcialmente Producto
 - **URL:** `/products/{id}/`
-- **Method:** PATCH
-- **Description:** Partially update a specific product.
+- **Método:** PATCH
+- **Descripción:** Actualizar parcialmente un producto específico.
 
-#### Delete Product
+#### Eliminar Producto
 - **URL:** `/products/{id}/`
-- **Method:** DELETE
-- **Description:** Delete a specific product.
+- **Método:** DELETE
+- **Descripción:** Eliminar un producto específico.
 
-### Rules
+### Reglas
 
-#### List Rules
+#### Listar Reglas
 - **URL:** `/rules/`
-- **Method:** GET
-- **Description:** Retrieve a list of all rules.
+- **Método:** GET
+- **Descripción:** Obtener una lista de todas las reglas.
 
-#### Create Rule
+#### Crear Regla
 - **URL:** `/rules/`
-- **Method:** POST
-- **Description:** Create a new rule.
+- **Método:** POST
+- **Descripción:** Crear una nueva regla.
 
-#### Retrieve Rule
+#### Obtener Regla
 - **URL:** `/rules/{id}/`
-- **Method:** GET
-- **Description:** Retrieve details of a specific rule.
+- **Método:** GET
+- **Descripción:** Obtener detalles de una regla específica.
 
-#### Update Rule
+#### Actualizar Regla
 - **URL:** `/rules/{id}/`
-- **Method:** PUT
-- **Description:** Update a specific rule.
+- **Método:** PUT
+- **Descripción:** Actualizar una regla específica.
 
-#### Partial Update Rule
+#### Actualizar Parcialmente Regla
 - **URL:** `/rules/{id}/`
-- **Method:** PATCH
-- **Description:** Partially update a specific rule.
+- **Método:** PATCH
+- **Descripción:** Actualizar parcialmente una regla específica.
 
-#### Delete Rule
+#### Eliminar Regla
 - **URL:** `/rules/{id}/`
-- **Method:** DELETE
-- **Description:** Delete a specific rule.
+- **Método:** DELETE
+- **Descripción:** Eliminar una regla específica.
 
-## Models
+## Modelos
 
-### Product
-- `product_name` (string): Name of the product (unique, max length: 100)
-- `price` (integer): Price of the product
+### Producto
+- `product_name` (string): Nombre del producto (unique, longitud máxima: 100)
+- `price` (int): Precio del producto
 
-### Rule
-- `product_name` (string): Name of the product (max length: 100)
-- `quantity` (integer, nullable): Quantity for the rule
-- `discount` (integer, nullable): Discount for the rule
+### Regla
+- `product_name` (string): Nombre del producto (longitud máxima: 100)
+- `quantity` (int, nullable): Cantidad para la regla
+- `discount` (int, nullable): Descuento para la regla
 
 ### Checkout
-- `scanned_products` (array): List of scanned products
-- `rules` (array): List of applied rules
+- `scanned_products` (array): Lista de productos escaneados
+- `rules` (array): Lista de reglas aplicadas
 
-### ScannedProduct
-- `checkout` (integer): ID of the associated checkout
-- `product` (integer): ID of the scanned product
-- `quantity` (integer): Quantity of the scanned product
+### Producto Escaneado
+- `checkout` (int): ID del checkout asociado
+- `product` (int): ID del producto escaneado
+- `quantity` (int): Cantidad del producto escaneado
 
-## Notes
+## Comentarios
 
-- All POST and PUT requests expect JSON-formatted request bodies.
-- Responses are returned in JSON format.
-- Authentication may be required for certain endpoints (not specified in the provided code).
+- Todas las solicitudes POST y PUT esperan cuerpos de solicitud en formato JSON, excepto el post del checkout.
+- Las respuestas se devuelven en formato JSON.
