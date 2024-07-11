@@ -37,11 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'checkout',
+    'kataCheckout',
     'rest_framework_swagger',
     'rest_framework',
-    'drf_yasg'
-
+    'drf_yasg',
+    'checkout'
 ]
 
 MIDDLEWARE = [

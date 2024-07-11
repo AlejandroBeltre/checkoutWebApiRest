@@ -1,77 +1,77 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import viewsets
-from rest_framework.views import APIView
-from .models import *
-from .serializers import *
-from kataCheckout import *
-# Create your views here.
+from rest_framework import status, viewsets
+from rest_framework.decorators import action
+from .models import Product, Rule, Checkout, ScannedProduct
+from .serializers import ProductSerializer, RuleSerializer, CheckoutSerializer, ScannedProductSerializer
+from kataCheckout import Checkout as kCheckout, Product as kProduct, Rules as kRules
 
-class ProductView(APIView):
-    def post(self, request):
-        name = request.data.get("name")
-        price = request.data.get("price")
+class ProductView(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
-        if not name or price is None:
-            return Response({"error:" "Name and price are required"}, status=status.HTTP_400_BAD_REQUEST)
+class RuleView(viewsets.ModelViewSet):
+    queryset = Rule.objects.all()
+    serializer_class = RuleSerializer
 
-        try:
-            price = int(price)
-            product, created = Product.objects.update_or_create(name=name, defaults={"price": price})
-            message = "Product added" if created else "Product updated"
-            return Response({"message": message, "name": product.name, "price": product.price}, status=status.HTTP_201_CREATED)
-        except ValueError:
-            return Response({"error": "Price must be an integer"}, status=status.HTTP_400_BAD_REQUEST)
-    def get(self, request, product_name=None):
-        if product_name:
-            product = get_object_or_404(Product, name=product_name)
-            return Response({"name": product.name, "price": product.price})
+class CheckoutView(viewsets.ModelViewSet):
+    queryset = Checkout.objects.all()
+    serializer_class = CheckoutSerializer
 
-        products = Product.objects.all()
-        return Response({p.name: {"name": p.name, "price": p.price} for p in products})
-class RuleView(APIView):
-    def post(self, request):
-        product_name = request.data.get("product_name")
-        quantity = request.data.get("quantity")
-        discount = request.data.get("discount")
-        if not product_name or quantity is None or discount is None:
-            return Response({"error": "product_name, quantity and discount are required"}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            product = Product.objects.get(name=product_name)
-        except Product.DoesNotExist:
-            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+    @action(detail=True, methods=['post'])
+    def manage_checkout(self, request, pk=None):
+        checkout = self.get_object()
+        action_type = request.data.get('action_type')
 
-        try:
-            quantity = int(quantity) if quantity else None
-            discount = int(discount) if discount else None
-            rule, created = Rule.objects.update_or_create(product=product, defaults={"quantity": quantity, "discount": discount})
-            message = "Rule added" if created else "Rule updated"
-            return Response({"message": message, "product_name": rule.product.name, "quantity": rule.quantity, "discount": rule.discount}, status=status.HTTP_201_CREATED)
-        except ValueError:
-            return Response({"error": "Quantity and discount must be integers"}, status=status.HTTP_400_BAD_REQUEST)
+        if action_type == 'manage_checkout':
+            # Handle scan_product
+            scan_product_data = request.data.get('scan_product')
+            if scan_product_data:
+                product_name = scan_product_data.get('product_name')
+                quantity = int(scan_product_data.get('quantity', 1))
+                product = get_object_or_404(Product, product_name=product_name)
 
-    def get(self, request, product_name=None):
-        if product_name:
-            rule = get_object_or_404(Rule, product__name=product_name)
-            return Response({"product_name": rule.product.name, "quantity": rule.quantity, "discount": rule.discount})
+                scanned_product, created = ScannedProduct.objects.get_or_create(
+                    checkout=checkout,
+                    product=product,
+                    defaults={'quantity': quantity}
+                )
+                if not created:
+                    scanned_product.quantity += quantity
+                    scanned_product.save()
 
-        rules = Rule.objects.all()
-        return Response({r.product.name: {"product_name": r.product.name, "quantity": r.quantity, "discount": r.discount} for r in rules})
+            # Handle add_rule
+            add_rule_data = request.data.get('add_rule')
+            if add_rule_data:
+                rule_id = add_rule_data.get('rule_id')
+                rule = get_object_or_404(Rule, id=rule_id)
+                
+                # Add rule to checkout
+                checkout.rules.append({
+                    'product_name': rule.product_name,
+                    'quantity': rule.quantity,
+                    'discount': rule.discount
+                })
+                checkout.save()
 
-class CheckoutView(APIView):
-    def post(self, request):
-        product_names = request.data.get("product_name", [])
-        if not product_names:
-            return Response({"error": "Products are required"}, status=status.HTTP_400_BAD_REQUEST)
-        rules = {r.product.name: r.to_kataRules() for r in Rule.objects.all()}
-        checkout = Checkout(rules)
+            # Handle total
+            if request.data.get('total'):
+                rules = {}
+                for rule in Rule.objects.all():
+                    product = get_object_or_404(Product, product_name=rule.product_name)
+                    rules[product.product_name] = kRules(product, rule.quantity, rule.discount)
+                
+                k_checkout = kCheckout(rules)
+                
+                # Scan products
+                for scanned_product in ScannedProduct.objects.filter(checkout=checkout):
+                    product = kProduct(scanned_product.product.product_name, scanned_product.product.price)
+                    for _ in range(scanned_product.quantity):
+                        k_checkout.scan(product)
+                
+                total = k_checkout.total()
+                return Response({"total": total}, status=status.HTTP_200_OK)
 
-        for name in product_names:
-            try:
-                product = Product.objects.get(name=name)
-                checkout.scan(product.to_kataProduct())
-            except Product.DoesNotExist:
-                return Response({"error": f"Product {name} not found"}, status=status.HTTP_404_NOT_FOUND)
-        total = checkout.total()
-        return Response({"total": total})
+            return Response({"message": "Checkout managed successfully"}, status=status.HTTP_200_OK)
+
+        return Response({"error": "Invalid action type"}, status=status.HTTP_400_BAD_REQUEST)

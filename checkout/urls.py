@@ -1,12 +1,13 @@
-from .views import *
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import *
+from .views import ProductView, RuleView, CheckoutView
 
-urlPatterns = [
-    path('products/', ProductView.as_view(), name='products'),
-    path('products/<str:product_name>/', ProductView.as_view(), name='product-detail'),
-    path('rules/', RuleView.as_view(), name='rules'),
-    path('rules/<str:product_name>/', RuleView.as_view(), name='rule-detail'),
-    path('checkout/', CheckoutView.as_view(), name='checkout'),
+router = DefaultRouter()
+router.register(r'products', ProductView)
+router.register(r'rules', RuleView)
+router.register(r'checkouts', CheckoutView)
+
+urlpatterns = [
+    path('', include(router.urls)),
+    path('checkouts/<int:pk>/manage_checkout/', CheckoutView.as_view({'post': 'manage_checkout'}), name='manage_checkout'),
 ]
