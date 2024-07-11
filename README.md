@@ -1,8 +1,6 @@
 # checkoutWebApiRest
 Repositorio para el consumo del paquete de pip de la kataCheckout en una web api rest en django con python.
 
-# Checkout System API Documentation
-
 ## Base URL
 
 `/localhost:8000/`
