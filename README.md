@@ -115,16 +115,6 @@ POST /checkouts/{id}/manage_checkout/
 - `product` (int): ID del producto escaneado
 - `quantity` (int): Cantidad del producto escaneado
 
-## Desarrollo
-
-Para contribuir al proyecto:
-
-1. Fork el repositorio
-2. Cree una nueva rama (`git checkout -b feature/AmazingFeature`)
-3. Haga commit de sus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abra un Pull Request
-
 ## Notas Adicionales
 
 - Todas las solicitudes POST y PUT esperan cuerpos de solicitud en formato JSON, excepto el POST del checkout.
@@ -134,7 +124,3 @@ Para contribuir al proyecto:
 ## Soporte
 
 Si encuentra algún problema o tiene alguna pregunta, por favor abra un issue en el repositorio de GitHub.
-
-## Licencia
-
-[Incluya aquí la información de la licencia]
