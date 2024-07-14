@@ -159,3 +159,4 @@ Ejemplo de json body:
 
 - Todas las solicitudes POST y PUT esperan cuerpos de solicitud en formato JSON, excepto el post del checkout.
 - Las respuestas se devuelven en formato JSON.
+ test
