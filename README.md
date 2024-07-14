@@ -1,62 +1,65 @@
 # checkoutWebApiRest
-Repositorio para el consumo del paquete de pip de la kataCheckout en una web api rest en django con python.
 
-## Base URL
+Este repositorio contiene una API REST en Django para el consumo del paquete pip de la kataCheckout.
 
-`/localhost:8000/`
+## Configuración del Entorno
 
-## Docs URL
-`/localhost:8000/docs/`
+### Prerrequisitos
+- Docker
+- Docker Compose (opcional, pero recomendado)
 
-## Endpoints
+### Instalación y Ejecución
 
-### Checkouts
+1. Clone el repositorio:
+   ```
+   git clone https://github.com/yourusername/checkoutWebApiRest.git
+   cd checkoutWebApiRest
+   ```
 
-#### Listar Checkouts
-- **URL:** `/checkouts/`
-- **Método:** GET
-- **Descripción:** Obtener una lista de todos los checkouts.
+2. Ejecute la aplicación usando Docker:
+   ```
+   docker pull alejandrxbeltre/checkoutwebapi:latest
+   docker run -d -p 8000:8000 alejandrxbeltre/checkoutwebapi:latest
+   ```
 
-#### Crear Checkout
-- **URL:** `/checkouts/`
-- **Método:** POST
-- **Descripción:** Crear un nuevo checkout.
+   O si prefiere construir la imagen localmente:
+   ```
+   docker build -t checkoutwebapi:latest .
+   docker run -d -p 8000:8000 checkoutwebapi:latest
+   ```
 
-#### Obtener Checkout
-- **URL:** `/checkouts/{id}/`
-- **Método:** GET
-- **Descripción:** Obtener detalles de un checkout específico.
+3. La API estará disponible en `http://localhost:8000/`
 
-#### Actualizar Checkout
-- **URL:** `/checkouts/{id}/`
-- **Método:** PUT
-- **Descripción:** Actualizar un checkout específico.
+## Documentación de la API
 
-#### Actualizar Parcialmente Checkout
-- **URL:** `/checkouts/{id}/`
-- **Método:** PATCH
-- **Descripción:** Actualizar parcialmente un checkout específico.
+### Base URL
 
-#### Eliminar Checkout
-- **URL:** `/checkouts/{id}/`
-- **Método:** DELETE
-- **Descripción:** Eliminar un checkout específico.
+`http://localhost:8000/`
 
-#### Gestionar Checkout
-- **URL:** `/checkouts/{id}/manage_checkout/`
-- **Método:** POST
-- **Descripción:** Gestionar un checkout, incluyendo escaneo de productos, adición de reglas y cálculo de totales.
-- **Parámetros:**
-  - `action_type` (string): Tipo de acción a realizar (ej. "manage_checkout")
-  - `scan_product` (objeto, opcional): Producto a escanear
-    - `product_name` (string): Nombre del producto
-    - `quantity` (entero, opcional): Cantidad del producto (por defecto: 1)
-  - `add_rule` (objeto, opcional): Regla a añadir
-    - `rule_id` (entero): ID de la regla a añadir
-  - `total` (booleano, opcional): Calcular total si se establece a verdadero
+### Documentación Swagger
 
-Ejemplo de json body:
-```
+La documentación detallada de la API está disponible en Swagger UI:
+
+`http://localhost:8000/docs/`
+
+### Endpoints
+
+#### Checkouts
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET    | `/checkouts/` | Listar todos los checkouts |
+| POST   | `/checkouts/` | Crear un nuevo checkout |
+| GET    | `/checkouts/{id}/` | Obtener detalles de un checkout específico |
+| PUT    | `/checkouts/{id}/` | Actualizar un checkout específico |
+| PATCH  | `/checkouts/{id}/` | Actualizar parcialmente un checkout |
+| DELETE | `/checkouts/{id}/` | Eliminar un checkout |
+| POST   | `/checkouts/{id}/manage_checkout/` | Gestionar un checkout (escanear productos, añadir reglas, calcular total) |
+
+##### Ejemplo de Gestión de Checkout
+
+```json
+POST /checkouts/{id}/manage_checkout/
 {
     "action_type": "manage_checkout",
     "scan_product": {
@@ -70,93 +73,68 @@ Ejemplo de json body:
 }
 ```
 
+#### Productos
 
-### Productos
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET    | `/products/` | Listar todos los productos |
+| POST   | `/products/` | Crear un nuevo producto |
+| GET    | `/products/{id}/` | Obtener detalles de un producto |
+| PUT    | `/products/{id}/` | Actualizar un producto |
+| PATCH  | `/products/{id}/` | Actualizar parcialmente un producto |
+| DELETE | `/products/{id}/` | Eliminar un producto |
 
-#### Listar Productos
-- **URL:** `/products/`
-- **Método:** GET
-- **Descripción:** Obtener una lista de todos los productos.
+#### Reglas
 
-#### Crear Producto
-- **URL:** `/products/`
-- **Método:** POST
-- **Descripción:** Crear un nuevo producto.
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET    | `/rules/` | Listar todas las reglas |
+| POST   | `/rules/` | Crear una nueva regla |
+| GET    | `/rules/{id}/` | Obtener detalles de una regla |
+| PUT    | `/rules/{id}/` | Actualizar una regla |
+| PATCH  | `/rules/{id}/` | Actualizar parcialmente una regla |
+| DELETE | `/rules/{id}/` | Eliminar una regla |
 
-#### Obtener Producto
-- **URL:** `/products/{id}/`
-- **Método:** GET
-- **Descripción:** Obtener detalles de un producto específico.
+### Modelos de Datos
 
-#### Actualizar Producto
-- **URL:** `/products/{id}/`
-- **Método:** PUT
-- **Descripción:** Actualizar un producto específico.
-
-#### Actualizar Parcialmente Producto
-- **URL:** `/products/{id}/`
-- **Método:** PATCH
-- **Descripción:** Actualizar parcialmente un producto específico.
-
-#### Eliminar Producto
-- **URL:** `/products/{id}/`
-- **Método:** DELETE
-- **Descripción:** Eliminar un producto específico.
-
-### Reglas
-
-#### Listar Reglas
-- **URL:** `/rules/`
-- **Método:** GET
-- **Descripción:** Obtener una lista de todas las reglas.
-
-#### Crear Regla
-- **URL:** `/rules/`
-- **Método:** POST
-- **Descripción:** Crear una nueva regla.
-
-#### Obtener Regla
-- **URL:** `/rules/{id}/`
-- **Método:** GET
-- **Descripción:** Obtener detalles de una regla específica.
-
-#### Actualizar Regla
-- **URL:** `/rules/{id}/`
-- **Método:** PUT
-- **Descripción:** Actualizar una regla específica.
-
-#### Actualizar Parcialmente Regla
-- **URL:** `/rules/{id}/`
-- **Método:** PATCH
-- **Descripción:** Actualizar parcialmente una regla específica.
-
-#### Eliminar Regla
-- **URL:** `/rules/{id}/`
-- **Método:** DELETE
-- **Descripción:** Eliminar una regla específica.
-
-## Modelos
-
-### Producto
-- `product_name` (string): Nombre del producto (unique, longitud máxima: 100)
+#### Producto
+- `product_name` (string): Nombre del producto (único, max 100 caracteres)
 - `price` (int): Precio del producto
 
-### Regla
-- `product_name` (string): Nombre del producto (longitud máxima: 100)
+#### Regla
+- `product_name` (string): Nombre del producto (max 100 caracteres)
 - `quantity` (int, nullable): Cantidad para la regla
 - `discount` (int, nullable): Descuento para la regla
 
-### Checkout
+#### Checkout
 - `scanned_products` (array): Lista de productos escaneados
 - `rules` (array): Lista de reglas aplicadas
 
-### Producto Escaneado
+#### Producto Escaneado
 - `checkout` (int): ID del checkout asociado
 - `product` (int): ID del producto escaneado
 - `quantity` (int): Cantidad del producto escaneado
 
-## Comentarios
+## Desarrollo
 
-- Todas las solicitudes POST y PUT esperan cuerpos de solicitud en formato JSON, excepto el post del checkout.
+Para contribuir al proyecto:
+
+1. Fork el repositorio
+2. Cree una nueva rama (`git checkout -b feature/AmazingFeature`)
+3. Haga commit de sus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abra un Pull Request
+
+## Notas Adicionales
+
+- Todas las solicitudes POST y PUT esperan cuerpos de solicitud en formato JSON, excepto el POST del checkout.
 - Las respuestas se devuelven en formato JSON.
- test
+- Asegúrese de manejar los errores adecuadamente en su aplicación cliente.
+
+## Soporte
+
+Si encuentra algún problema o tiene alguna pregunta, por favor abra un issue en el repositorio de GitHub.
+
+## Licencia
+
+[Incluya aquí la información de la licencia]
