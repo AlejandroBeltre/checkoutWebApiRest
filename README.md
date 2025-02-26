@@ -12,7 +12,7 @@ Este repositorio contiene una API REST en Django para el consumo del paquete pip
 
 1. Clone el repositorio:
    ```
-   git clone https://github.com/yourusername/checkoutWebApiRest.git
+   git clone https://github.com/AlejandroBeltre/checkoutWebApiRest.git
    cd checkoutWebApiRest
    ```
 
