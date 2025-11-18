@@ -2,6 +2,7 @@
 *.pyo
 *.mo
 *.db
+*.sqlite3
 *.css.map
 *.egg-info
 *.sql.gz
@@ -13,6 +14,7 @@
 .DS_Store
 .git/
 .gitignore
+.gitattributes
 .env
 .venv
 env/
@@ -22,3 +24,15 @@ env.bak/
 venv.bak/
 staticfiles
 media
+data/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+docker-compose*.yml
+README.md
+.dockerignore
+Dockerfile
+dockerfile
