@@ -6,29 +6,119 @@ Este repositorio contiene una API REST en Django para el consumo del paquete pip
 
 ### Prerrequisitos
 - Docker
-- Docker Compose (opcional, pero recomendado)
+- Docker Compose (recomendado)
 
 ### Instalación y Ejecución
 
+#### Opción 1: Docker Compose (Recomendado)
+
 1. Clone el repositorio:
-   ```
+   ```bash
    git clone https://github.com/AlejandroBeltre/checkoutWebApiRest.git
    cd checkoutWebApiRest
    ```
 
-2. Ejecute la aplicación usando Docker:
-   ```
-   docker pull alejandrxbeltre/checkoutwebapi:latest
-   docker run -d -p 8000:8000 alejandrxbeltre/checkoutwebapi:latest
+2. **Con SQLite (Base de datos por defecto):**
+   ```bash
+   docker-compose up -d
    ```
 
-   O si prefiere construir la imagen localmente:
-   ```
-   docker build -t checkoutwebapi:latest .
-   docker run -d -p 8000:8000 checkoutwebapi:latest
+   **Con PostgreSQL:**
+   ```bash
+   docker-compose -f docker-compose.postgres.yml up -d
    ```
 
 3. La API estará disponible en `http://localhost:8000/`
+4. Panel de administración: `http://localhost:8000/admin/` (usuario: admin, contraseña: admin123)
+
+#### Opción 2: Docker sin Compose
+
+1. Clone el repositorio:
+   ```bash
+   git clone https://github.com/AlejandroBeltre/checkoutWebApiRest.git
+   cd checkoutWebApiRest
+   ```
+
+2. Construya la imagen:
+   ```bash
+   docker build -t checkoutwebapi:latest .
+   ```
+
+3. Ejecute el contenedor:
+   ```bash
+   # Crear directorio para la base de datos
+   mkdir -p data
+
+   # Ejecutar contenedor con SQLite
+   docker run -d -p 8000:8000 -v $(pwd)/data:/code/data checkoutwebapi:latest
+   ```
+
+4. La API estará disponible en `http://localhost:8000/`
+
+#### Opción 3: Usar imagen pre-construida
+
+```bash
+docker pull alejandrxbeltre/checkoutwebapi:latest
+docker run -d -p 8000:8000 -v $(pwd)/data:/code/data alejandrxbeltre/checkoutwebapi:latest
+```
+
+### Configuración Avanzada
+
+#### Variables de Entorno
+
+Puede personalizar la aplicación usando variables de entorno. Copie `.env.example` a `.env` y modifique según necesite:
+
+```bash
+cp .env.example .env
+```
+
+Variables disponibles:
+- `DJANGO_SECRET_KEY`: Clave secreta de Django (cambiar en producción)
+- `DJANGO_DEBUG`: Modo debug (True/False)
+- `DJANGO_ALLOWED_HOSTS`: Hosts permitidos (separados por comas)
+- `DB_ENGINE`: Motor de base de datos (sqlite3/postgresql)
+- `DB_PATH`: Ruta a la base de datos SQLite
+- `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`: Configuración PostgreSQL
+
+#### Base de Datos
+
+**SQLite (Por defecto):**
+- Base de datos local almacenada en `./data/db.sqlite3`
+- Ideal para desarrollo y pruebas
+- Los datos persisten en el volumen montado
+
+**PostgreSQL (Opcional):**
+- Para entornos de producción o desarrollo con mayor carga
+- Use `docker-compose.postgres.yml` para despliegue completo
+- Configuración automática con variables de entorno
+
+### Gestión del Contenedor
+
+```bash
+# Ver logs
+docker-compose logs -f
+
+# Detener servicios
+docker-compose down
+
+# Reiniciar servicios
+docker-compose restart
+
+# Reconstruir imagen
+docker-compose build
+
+# Ejecutar comandos en el contenedor
+docker-compose exec web python manage.py <comando>
+
+# Crear migraciones
+docker-compose exec web python manage.py makemigrations
+
+# Aplicar migraciones
+docker-compose exec web python manage.py migrate
+
+# Crear superusuario adicional
+docker-compose exec web python manage.py createsuperuser
+```
 
 ## Documentación de la API
 

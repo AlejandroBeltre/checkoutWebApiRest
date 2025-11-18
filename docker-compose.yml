@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    image: checkoutwebapi:latest
+    container_name: checkout-api
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist SQLite database
+      - ./data:/code/data
+    environment:
+      - DJANGO_DEBUG=True
+      - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+      - DB_ENGINE=sqlite3
+      - DB_PATH=/code/data/db.sqlite3
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional PostgreSQL service (uncomment to use)
+  # Uncomment this section and update web service environment to use PostgreSQL
+  # db:
+  #   image: postgres:15-alpine
+  #   container_name: checkout-postgres
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   environment:
+  #     - POSTGRES_DB=checkoutdb
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # To use PostgreSQL, update the web service environment:
+  # environment:
+  #   - DJANGO_DEBUG=True
+  #   - DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
+  #   - DB_ENGINE=postgresql
+  #   - DB_NAME=checkoutdb
+  #   - DB_USER=postgres
+  #   - DB_PASSWORD=postgres
+  #   - DB_HOST=db
+  #   - DB_PORT=5432
+  # And add depends_on:
+  #   depends_on:
+  #     - db
+
+# Uncomment this section if using PostgreSQL
+# volumes:
+#   postgres_data:
